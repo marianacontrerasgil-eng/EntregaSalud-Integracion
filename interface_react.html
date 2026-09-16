@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega Salud - Control de Inventario (React)</title>
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com"></script>
+    <!-- Estilos Profesionales de la EPS -->
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #007bff; margin-bottom: 5px; }
+        .subtitle { color: #6c757d; margin-bottom: 25px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6; }
+        th { background-color: #007bff; color: white; font-weight: 600; }
+        tr:hover { background-color: #f8f9fa; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background-color: #e2f0d9; color: #385723; }
+        .loading { text-align: center; color: #6c757d; font-style: italic; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    
+    <script type="text/babel">
+        function InventarioMedicamentos() {
+            // Definiendo los estados nativos de React para controlar los datos
+            const [medicamentos, setMedicamentos] = React.useState([]);
+            const [cargando, setCargando] = React.useState(true);
+
+            // Hook useEffect de React para consumir el Backend en Java Spring Boot al cargar el componente
+            React.useEffect(() => {
+                fetch('https://railway.app')
+                    .then(response => response.json())
+                    .then(data => {
+                        setMedicamentos(data);
+                        setCargando(false);
+                    })
+                    .catch(error => {
+                        console.error('Error conectando con Spring Boot:', error);
+                        setCargando(false);
+                    });
+            }, []);
+
+            if (cargando) {
+                return <div class="loading">Conectando con el Backend en Java Spring Boot...</div>;
+            }
+
+            return (
+                <div class="container">
+                    <h1>SISTEMA ENTREGA SALUD</h1>
+                    <div class="subtitle">Módulo Frontend en React - Control de Dispensación e Inventario EPS</div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Medicamento</th>
+                                <th>Unidades Disponibles (Stock)</th>
+                                <th>Laboratorio Farmacéutico</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {medicamentos.map(med => (
+                                <tr key={med.id}>
+                                    <td>{med.id}</td>
+                                    <td><strong>{med.nombre}</strong></td>
+                                    <td><span class="badge">{med.stock} Unidades</span></td>
+                                    <td>{med.laboratorio}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+
+        // Renderizado e Inyección oficial del componente React en el nodo raíz del HTML
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<InventarioMedicamentos />);
+    </script>
+</body>
+</html>

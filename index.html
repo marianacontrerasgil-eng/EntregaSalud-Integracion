@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega Salud - Integración de Módulos</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 30px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #007bff; text-align: center; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .status-box { background-color: #e2f0d9; border: 1px solid #70ad47; color: #385723; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-weight: bold; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏥 Sistema "Entrega Salud" - Módulo de Inventario</h1>
+    <div class="status-box">🟢 Estado del Sistema: Componentes Frontend y Backend Integrados Exitosamente</div>
+    
+    <h3>Listado en Tiempo Real (Consumo de API REST PHP)</h3>
+    <table id="tablaMedicamentos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre del Medicamento</th>
+                <th>Stock Disponible</th>
+                <th>Laboratorio Fabricante</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos lógicos inyectados por JavaScript aparecerán aquí -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function cargarMedicamentos() {
+        const url = 'http://localhost/EntregaSalud/medicamentos_appi.php';
+        try {
+            const respuesta = await fetch(url);
+            const resultado = await respuesta.json();
+            const lista = resultado.data;
+            const tbody = document.querySelector('#tablaMedicamentos tbody');
+            tbody.innerHTML = '';
+
+            lista.forEach(med => {
+                const fila = `<tr>
+                    <td>${med.id}</td>
+                    <td><strong>${med.nombre}</strong></td>
+                    <td>${med.stock} uds</td>
+                    <td>${med.laboratorio}</td>
+                </tr>`;
+                tbody.innerHTML += fila;
+            });
+        } catch (error) {
+            console.error('Error de conectividad: ' + error.message);
+        }
+    }
+    window.onload = cargarMedicamentos;
+</script>
+
+</body>
+</html>
